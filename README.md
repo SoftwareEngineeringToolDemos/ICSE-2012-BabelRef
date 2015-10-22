@@ -1,5 +1,5 @@
 # ICSE-2012-BabelRef
-Detection and Renaming Tool for Cross-Language Program Entities in Dynamic Web Applications.
+Detection and Renaming Tool for Cross-Language Program Entities in Dynamic Web Applications
 
 This repository contains information related to the tool BabelRef presented in the 34th International Conference on Software Engineering (ICSE), 2012. The tool was originally presented in [this paper](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6227240).
 
@@ -18,8 +18,8 @@ This repository was constructed by [Mohammed H Hassan](https://github.com/mhhass
 ## Instructions
 
 This tool has been distributed as a collection of Eclipse plugin projects, that can be imported into Eclipse and built. The repository's root contains the following folders:
-- __Source__: 5 (five) Eclipse projects for this tool.
-- __Binaries__: A collection of JAR files usable as is for use in an Eclipse installation.
+- __Source__
+- __Binaries__
 
 ### Description of /Source
 Contains the following Eclipse projects:
@@ -36,4 +36,4 @@ Contains the JAR files usable as is for use in an Eclipse installation.
 
 Author of tool: Hung Viet Nguyen
  
-Personal website: http://home.engineering.iastate.edu/~hungnv/Personal/index.php
+Author's Personal website: http://home.engineering.iastate.edu/~hungnv/Personal/index.php
