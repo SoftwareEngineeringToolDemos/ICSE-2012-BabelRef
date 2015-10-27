@@ -13,10 +13,9 @@ import php.nodes.ExpressionNode;
 import php.nodes.FormalParameterNode;
 import php.nodes.ScalarNode;
 import php.nodes.VariableNode;
-
+import util.StringUtils;
 import logging.MyLevel;
 import logging.MyLogger;
-
 import datamodel.nodes.DataNode;
 import datamodel.nodes.ConcatNode;
 import datamodel.nodes.LiteralNode;
@@ -254,7 +253,7 @@ public class ElementManager {
 		
 		/* Handle PHP system constants */
 		else if (constantName.toUpperCase().equals("__FILE__"))
-			return new LiteralNode(getProjectFolder() + "\\" + peekFileFromStack());
+			return new LiteralNode(getProjectFolder() + StringUtils.getFileSystemSlash() + peekFileFromStack());
 		
 		/* Else, return a symbolic value */
 		else
@@ -351,6 +350,24 @@ public class ElementManager {
 	}
 	
 	/*
+	 * Manage constraints
+	 */
+	
+	/**
+	 * Returns the set of constraints for the current scope.
+	 */
+	public ArrayList<Constraint> getConstraints() {
+		ArrayList<Constraint> constraints = new ArrayList<Constraint>();
+		
+		if (scopeType == ScopeType.BRANCH) {
+			constraints.add(new Constraint(conditionString, isTrueBranch));
+			constraints.addAll(outerScopeElementManager.getConstraints());
+		}
+		
+		return constraints;
+	}
+	
+	/*
 	 * Update ElementManager when executing the program.
 	 */
 	
@@ -361,6 +378,7 @@ public class ElementManager {
 		// If a branch has a return/exit statement, update the variables in the current scope with the other branch
 		boolean trueBranchTerminated = (trueBranchElementManager != null && (trueBranchElementManager.hasReturnStatement() || trueBranchElementManager.hasExitStatement()));
 		boolean falseBranchTerminated = (falseBranchElementManager != null && (falseBranchElementManager.hasReturnStatement() || falseBranchElementManager.hasExitStatement()));
+		
 		if (trueBranchTerminated || falseBranchTerminated) {
 			if (trueBranchTerminated && !falseBranchTerminated && falseBranchElementManager != null)
 				this.updateVariableTable(falseBranchElementManager);
@@ -374,12 +392,15 @@ public class ElementManager {
 		HashSet<String> variableNamesInFalseBranch = (falseBranchElementManager != null ? falseBranchElementManager.getRegularVariableNames() : new HashSet<String>());
 		HashSet<String> variableNamesInEitherBranch = new HashSet<String>(variableNamesInTrueBranch);
 		variableNamesInEitherBranch.addAll(variableNamesInFalseBranch);
+		
 		for (String variableName : variableNamesInEitherBranch) {
 			PhpVariable variableInTrueBranch = (trueBranchElementManager != null ? trueBranchElementManager.getVariableFromFunctionScope(variableName) : this.getVariableFromFunctionScope(variableName));
 			PhpVariable variableInFalseBranch = (falseBranchElementManager != null ? falseBranchElementManager.getVariableFromFunctionScope(variableName) : this.getVariableFromFunctionScope(variableName));
+			
 			DataNode dataNodeInTrueBranch = (variableInTrueBranch != null ? variableInTrueBranch.getDataNode() : null);
 			DataNode dataNodeInFalseBranch = (variableInFalseBranch != null ? variableInFalseBranch.getDataNode() : null);
 			DataNode compactSelectNode = new SelectNode(conditionString, dataNodeInTrueBranch, dataNodeInFalseBranch).compact();
+			
 			PhpVariable phpVariable = new PhpVariable(variableName);
 			phpVariable.setDataNode(compactSelectNode);
 			this.putVariableInCurrentScope(phpVariable);
@@ -389,9 +410,11 @@ public class ElementManager {
 		if (trueBranchElementManager != null && trueBranchElementManager.containsSpecialVariableOutput() || falseBranchElementManager != null && falseBranchElementManager.containsSpecialVariableOutput()) {
 			PhpVariable variableInTrueBranch = (trueBranchElementManager != null ? trueBranchElementManager.getVariableFromProgramScope(SPECIAL_VARIABLE_OUTPUT) : this.getVariableFromProgramScope(SPECIAL_VARIABLE_OUTPUT));
 			PhpVariable variableInFalseBranch = (falseBranchElementManager != null ? falseBranchElementManager.getVariableFromProgramScope(SPECIAL_VARIABLE_OUTPUT) : this.getVariableFromProgramScope(SPECIAL_VARIABLE_OUTPUT));
+			
 			DataNode dataNodeInTrueBranch = (variableInTrueBranch != null ? variableInTrueBranch.getDataNode() : null);
 			DataNode dataNodeInFalseBranch = (variableInFalseBranch != null ? variableInFalseBranch.getDataNode() : null);
 			DataNode compactSelectNode = new SelectNode(conditionString, dataNodeInTrueBranch, dataNodeInFalseBranch).compact();
+			
 			PhpVariable phpVariable = new PhpVariable(SPECIAL_VARIABLE_OUTPUT);
 			phpVariable.setDataNode(compactSelectNode);
 			this.putVariableInCurrentScope(phpVariable);
@@ -423,13 +446,16 @@ public class ElementManager {
 		for (String variableName : variableNamesInsideLoop) {
 			PhpVariable variableBeforeLoop = this.getVariableFromFunctionScope(variableName);
 			PhpVariable variableInsideLoop = loopElementManager.getVariableFromCurrentScope(variableName);
+			
 			DataNode dataNodeBeforeLoop = (variableBeforeLoop != null ? variableBeforeLoop.getDataNode() : null);
 			DataNode dataNodeAfterLoop = variableInsideLoop.getDataNode();
+			
 			DataNode appendedStringValue = getAppendedStringValue(dataNodeBeforeLoop, dataNodeAfterLoop);
 			if (appendedStringValue != null) {			
 				PhpVariable phpVariable = new PhpVariable(variableName);
 				if (dataNodeBeforeLoop != null)
 					phpVariable.appendStringValue(dataNodeBeforeLoop);
+				
 				RepeatNode repeatNode = new RepeatNode(conditionString, appendedStringValue);
 				phpVariable.appendStringValue(repeatNode);
 				this.putVariableInCurrentScope(phpVariable);
@@ -439,13 +465,16 @@ public class ElementManager {
 		if (loopElementManager.containsSpecialVariableOutput()) {
 			PhpVariable variableBeforeLoop = this.getVariableFromProgramScope(SPECIAL_VARIABLE_OUTPUT);
 			PhpVariable variableInsideLoop = loopElementManager.getVariableFromCurrentScope(SPECIAL_VARIABLE_OUTPUT);
+			
 			DataNode dataNodeBeforeLoop = (variableBeforeLoop != null ? variableBeforeLoop.getDataNode() : null);
 			DataNode dataNodeAfterLoop = variableInsideLoop.getDataNode();
 			DataNode appendedStringValue = getAppendedStringValue(dataNodeBeforeLoop, dataNodeAfterLoop);
+			
 			if (appendedStringValue != null) {		
 				PhpVariable phpVariable = new PhpVariable(SPECIAL_VARIABLE_OUTPUT);
 				if (dataNodeBeforeLoop != null)
 					phpVariable.appendStringValue(dataNodeBeforeLoop);
+				
 				RepeatNode repeatNode = new RepeatNode(conditionString, appendedStringValue);
 				phpVariable.appendStringValue(repeatNode);
 				this.putVariableInCurrentScope(phpVariable);
@@ -461,11 +490,13 @@ public class ElementManager {
 	private DataNode getAppendedStringValue(DataNode stringValueBeforeLoop, DataNode stringValueAfterLoop) {
 		if (stringValueBeforeLoop == null)
 			return stringValueAfterLoop;
+		
 		if ( !(stringValueAfterLoop instanceof ConcatNode) )
 			return null;
 		
 		ArrayList<DataNode> stringValuesBeforeLoop = new ArrayList<DataNode>();
 		ArrayList<DataNode> stringValuesAfterLoop = new ArrayList<DataNode>();
+		
 		if (stringValueBeforeLoop instanceof ConcatNode)
 			stringValuesBeforeLoop.addAll(((ConcatNode) stringValueBeforeLoop).getChildNodes());
 		else
@@ -548,10 +579,12 @@ public class ElementManager {
 	public void appendOutput(ArrayList<DataNode> resolvedExpressionNodes) {
 		PhpVariable newOutputVariable = new PhpVariable(SPECIAL_VARIABLE_OUTPUT);
 		PhpVariable oldOutputVariable = this.getVariableFromProgramScope(SPECIAL_VARIABLE_OUTPUT);
+		
 		if (oldOutputVariable != null)
 			newOutputVariable.appendStringValue(oldOutputVariable.getDataNode());
 		for (DataNode stringValue : resolvedExpressionNodes)
 			newOutputVariable.appendStringValue(stringValue);
+		
 		this.putVariableInCurrentScope(newOutputVariable);
 	}
 	

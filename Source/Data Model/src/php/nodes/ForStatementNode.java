@@ -50,6 +50,21 @@ public class ForStatementNode extends StatementNode {
 	 */
 	@Override
 	public DataNode execute(ElementManager elementManager) {
+		/*
+		 * The following code is used from BabelRef to identify PHP variable entities.
+		 */
+		// BEGIN OF BABELREF CODE
+		if (VariableNode.variableDeclListener != null) {
+			for (ExpressionNode expressionNode : initializerNodes) {
+				if (expressionNode instanceof AssignmentNode) {
+					AssignmentNode assignmentNode = (AssignmentNode) expressionNode;
+					if (assignmentNode.getVariableBaseNode() instanceof VariableNode)
+						((VariableNode) assignmentNode.getVariableBaseNode()).variableDeclFound(elementManager);
+				}
+			}
+		}
+		// END OF BABELREF CODE
+		
 		// The initializers should not be executed; Otherwise, the loopNode will contain information about the
 		// first iteration and cannot be generalized for other iterations.
 		//for (ExpressionNode expressionNode : initializerNodes)

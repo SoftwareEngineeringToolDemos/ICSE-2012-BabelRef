@@ -96,6 +96,12 @@ public class FunctionInvocationNode extends VariableBaseNode {
 		// Avoid recursive function calling
 		if (elementManager.containsFunctionInStack(functionName))
 			return new SymbolicNode(this);
+		
+		/*
+		 * For some standard PHP functions, process them separately.
+		 */
+		if (functionName.equals("isset") || functionName.equals("empty"))
+			return php_isset(argumentExpressionNodes, elementManager);	
 			
 		/*
 		 * Get the argument values
@@ -107,9 +113,12 @@ public class FunctionInvocationNode extends VariableBaseNode {
 				
 		/*
 		 * For some standard PHP functions, process them separately.
+		 * Note that argumentExpressionNodes (of type ExpressionNode)
+		 * 		have now been resolved to argumentValues (of type DataNode)
 		 */
-		if (functionName.equals("exit")) 										
+		if (functionName.equals("exit") || functionName.equals("die")) 										
 			return php_exit(argumentValues, elementManager);
+			// TODO Handle die or not?
 			// Should not handle the "die" function because "die" indicates something abnormal happened,
 		 	// whereas with "exit", the developer's intention is to create different versions.
 		else if (functionName.equals("print"))
@@ -311,6 +320,24 @@ public class FunctionInvocationNode extends VariableBaseNode {
 		// BEGIN OF BABELREF CODE
 		if (mysqlQueryStatementListener != null && parameterValues.size() == 1)
 			return parameterValues.get(0);	// @see php.nodes.ArrayAccessNode.execute(ElementManager)
+		// END OF BABELREF CODE
+		
+		return new SymbolicNode(this);
+	}
+	
+	/**
+	 * Implements the standard PHP function: isset
+	 */
+	private DataNode php_isset(ArrayList<ExpressionNode> argumentExpressionNodes, ElementManager elementManager) {
+		/*
+		 * The following code is used from BabelRef to identify PHP variable entities.
+		 */
+		// BEGIN OF BABELREF CODE
+		if (VariableNode.variableDeclListener != null) {
+			ExpressionNode argumentExpressionNode = argumentExpressionNodes.get(0);
+			if (argumentExpressionNode instanceof VariableNode)
+				((VariableNode) argumentExpressionNode).variableDeclFound(elementManager);
+		}
 		// END OF BABELREF CODE
 		
 		return new SymbolicNode(this);

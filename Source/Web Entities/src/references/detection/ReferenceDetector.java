@@ -8,14 +8,16 @@ import java.util.ArrayList;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-
 import constraints.Constraint;
 
 import datamodel.DataModel;
 import datamodel.nodes.ext.DataNode;
 
 import php.nodes.ArrayAccessNode;
+import php.nodes.FunctionDeclarationNode;
 import php.nodes.FunctionInvocationNode;
+import php.nodes.IdentifierNode;
+import php.nodes.VariableNode;
 
 import references.ReferenceManager;
 import sourcetracing.Location;
@@ -56,12 +58,39 @@ public class ReferenceDetector {
 				phpVisitor.visitSqlTableColumn(dataNode, scope);
 			}
 		};
+		
+		VariableNode.variableDeclListener = new VariableNode.IVariableDeclListener() {
+			
+			@Override
+			public void variableDeclFound(IdentifierNode variableName, ArrayList<php.Constraint> constraints, String scope) {
+				phpVisitor.visitVariableDecl(variableName, constraints, scope);
+			}
+		};
+		
+		VariableNode.variableRefListener = new VariableNode.IVariableRefListener() {
+			
+			@Override
+			public void variableRefFound(IdentifierNode variableName, ArrayList<php.Constraint> constraints, String scope) {
+				phpVisitor.visitVariableRef(variableName, constraints, scope);
+			}
+		};
+		
+		FunctionDeclarationNode.formalParameterListener = new FunctionDeclarationNode.IFormalParameterListener() {
+			
+			@Override
+			public void formalParameterFound(IdentifierNode variableName, String scope) {
+				phpVisitor.visitVariableDecl(variableName, new ArrayList<php.Constraint>(), scope);
+			}
+		};
 	}
 	
 	public static void findReferencesInPhpCodeFinished() {
 		ArrayAccessNode.requestVariableListener = null;
 		FunctionInvocationNode.mysqlQueryStatementListener = null;
 		ArrayAccessNode.sqlTableColumnListener = null;
+		VariableNode.variableDeclListener = null;
+		VariableNode.variableRefListener = null;
+		FunctionDeclarationNode.formalParameterListener = null;
 	}
 	
 	/**

@@ -1,11 +1,22 @@
 package references.detection;
 
+import java.util.ArrayList;
+
+import constraints.AndConstraint;
+import constraints.AtomicConstraint;
+import constraints.Constraint;
+import constraints.NotConstraint;
+
+import php.nodes.IdentifierNode;
 import references.PhpRefToHtmlEntity;
 import references.PhpRefToSqlTableColumn;
+import references.PhpVariableDecl;
+import references.PhpVariableRef;
 import references.Reference;
 import references.ReferenceManager;
 import datamodel.nodes.ConcatNode;
 import datamodel.nodes.LiteralNode;
+import datamodel.nodes.ext.SelectNode;
 
 /**
  * PhpVisitor visits PHP elements and detects entities.
@@ -35,7 +46,8 @@ public class PhpVisitor {
 			String htmlInputName = literalNode.getStringValue(); // e.g. 'user' in $_GET['user']
 			
 			Reference reference = new PhpRefToHtmlEntity(htmlInputName, literalNode.getLocation(), relativeFilePath);
-			referenceManager.addReference(reference);
+			//TODO Comment out the statement below to stop detecting PhpRefToHtml entities.
+			//referenceManager.addReference(reference);
 		}
 	}
 	
@@ -67,6 +79,42 @@ public class PhpVisitor {
 			Reference reference = new PhpRefToSqlTableColumn(sqlTableColumnName, literalNode.getLocation(), scope);
 			referenceManager.addReference(reference);
 		}
+	}
+	
+	/**
+	 * Visits a PHP variable declarion (e.g. $user = "user").
+	 */
+	public void visitVariableDecl(IdentifierNode variableName, ArrayList<php.Constraint> constraints, String scope) {
+		Reference reference = new PhpVariableDecl(variableName.getName(), variableName.getLocation(), scope);
+		reference.setConstraint(createConstraintFromPhpConstraints(constraints));
+		referenceManager.addReference(reference);
+	}
+	
+	/**
+	 * Visits a PHP variable reference (e.g. echo $user).
+	 */
+	public void visitVariableRef(IdentifierNode variableName, ArrayList<php.Constraint> constraints, String scope) {
+		Reference reference = new PhpVariableRef(variableName.getName(), variableName.getLocation(), scope);
+		reference.setConstraint(createConstraintFromPhpConstraints(constraints));
+		referenceManager.addReference(reference);
+	}
+
+	/**
+	 * Creates an AndConstraint combining all the PHP constraints.
+	 */
+	public static Constraint createConstraintFromPhpConstraints(ArrayList<php.Constraint> phpConstraints) {
+		Constraint constraint = null;
+		
+		for (php.Constraint phpConstraint : phpConstraints) {
+			SelectNode selectNode = new SelectNode(new datamodel.nodes.SelectNode(phpConstraint.getConditionString(), null, null));
+			Constraint newConstraint = (phpConstraint.isTrueBranch() ? new AtomicConstraint(selectNode) : new NotConstraint(new AtomicConstraint(selectNode)));
+			if (constraint == null)
+				constraint = newConstraint;
+			else
+				constraint = new AndConstraint(constraint, newConstraint);
+		}
+		
+		return constraint;
 	}
 	
 }

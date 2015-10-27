@@ -3,7 +3,7 @@ package sourcetracing;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import config.DataModelConfig;
+import util.FileIO;
 
 /**
  * 
@@ -35,6 +35,10 @@ public class SourceCodeLocation extends Location {
 		return position;
 	}
 	
+	public int getLine() {
+		return FileIO.getLineFromOffsetInFile(filePath, position);
+	}
+	
 	/**
 	 * Returns true if the location is undefined.
 	 * @return
@@ -59,8 +63,8 @@ public class SourceCodeLocation extends Location {
 	@Override
 	public Element printToXmlFormat(Document document, int offsetPosition) {
 		Element element = document.createElement("SourceCodeLocation");
-		element.setAttribute(DataModelConfig.XML_FILE_PATH, filePath);
-		element.setAttribute(DataModelConfig.XML_POSITION, Integer.toString(position + offsetPosition));
+		element.setAttribute("File", filePath);
+		element.setAttribute("Position", Integer.toString(position + offsetPosition));
 		return element;
 	}
 	

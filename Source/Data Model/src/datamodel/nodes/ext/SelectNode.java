@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import sourcetracing.SourceCodeLocation;
 import config.DataModelConfig;
 
 /**
@@ -21,6 +22,13 @@ public class SelectNode extends DataNode {
 	 * Creates a SelectNode read from an XML element.
 	 */
 	public SelectNode(Element xmlElement) {
+		if (xmlElement.hasAttribute(DataModelConfig.XML_STRING_VALUE)) {
+			String stringValue = xmlElement.getAttribute(DataModelConfig.XML_STRING_VALUE);
+			String filePath = xmlElement.getAttribute(DataModelConfig.XML_FILE_PATH);
+			int position = Integer.valueOf(xmlElement.getAttribute(DataModelConfig.XML_POSITION));
+			conditionString = new LiteralNode(new datamodel.nodes.LiteralNode(stringValue, new SourceCodeLocation(filePath, position)));
+		}
+		
 		NodeList childrenList = xmlElement.getChildNodes();
 		for (int i = 0; i < childrenList.getLength(); i++) {
 			Element childNode = (Element) childrenList.item(i);

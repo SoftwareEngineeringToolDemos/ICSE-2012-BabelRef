@@ -20,12 +20,12 @@ public class UndeclaredEntity extends Entity {
 	
 	@Override
 	public String getName() {
-		return "[Dangling References]";
+		return " [Dangling References] ";
 	}
 	
 	@Override
 	public String getType() {
-		return "[Dangling References]";
+		return " [Dangling References] ";
 	}
 	
 	@Override

@@ -12,7 +12,7 @@ import org.eclipse.php.internal.core.ast.nodes.Include;
 import php.ElementManager;
 import php.elements.PhpFile;
 import php.elements.PhpVariable;
-
+import util.StringUtils;
 import datamodel.nodes.DataNode;
 import datamodel.nodes.SymbolicNode;
 
@@ -45,7 +45,7 @@ public class IncludeNode extends ExpressionNode {
 	 * Resolves the absolute path of the included file.
 	 */
 	private String resolveIncludedFileAbsolutePath(ElementManager elementManager) {
-		String includedFileRelativePath = includedFileExpressionNode.execute(elementManager).getApproximateStringValue().replace('/', '\\');
+		String includedFileRelativePath = includedFileExpressionNode.execute(elementManager).getApproximateStringValue().replace("\\", StringUtils.getFileSystemSlash()).replace("/", StringUtils.getFileSystemSlash());
 		
 		// Some systems specify absolute paths in include statements. In such cases, return its path right away.
 		if (new File(includedFileRelativePath).isFile())
@@ -56,11 +56,11 @@ public class IncludeNode extends ExpressionNode {
 		
 		String includedFileAbsolutePath = null;
 		for (String invokedFile : fileStack) {
-			File includedFile = new File(new File(projectFolder + '\\' + invokedFile).getParent(), includedFileRelativePath);
+			File includedFile = new File(new File(projectFolder + StringUtils.getFileSystemSlash() + invokedFile).getParent(), includedFileRelativePath);
 			if (includedFile.isFile()) { 
 				try {
 					includedFileAbsolutePath = includedFile.getCanonicalPath(); // getCanonicalPath() is better than getAbsolutePath() because it cancels the recursive ..\something\..\something\..
-					includedFileAbsolutePath = includedFileAbsolutePath.replace('/', '\\'); // Standardize the file path to Windows format
+					includedFileAbsolutePath = includedFileAbsolutePath.replace("\\", StringUtils.getFileSystemSlash()).replace("/", StringUtils.getFileSystemSlash()); // Standardize the file path to OS format
 					break;
 				} catch (IOException e) {
 				}

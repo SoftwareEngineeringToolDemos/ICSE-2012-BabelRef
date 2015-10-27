@@ -9,8 +9,8 @@ import java.util.ArrayList;
  */
 public class CountLOC {
 	
-	public static String projectName	= "";
-	public static String projectFolder	= "C:\\Users\\HUNG\\Desktop\\Lab\\Web Projects\\workspace\\Server Code\\" + projectName;
+	public static String projectName	= "webchess-1.0.0";
+	public static String projectFolder	= "/Work/To-do/Data/Web Projects/Server Code/" + projectName;
 
 	public static void main(String[] args) {
 		ArrayList<String> allFiles = FileIO.getAllFilesInFolderByExtensions(projectFolder, new String[]{".php", ".html", ".js"});

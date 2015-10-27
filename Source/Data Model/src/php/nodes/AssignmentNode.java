@@ -40,6 +40,14 @@ public class AssignmentNode extends ExpressionNode {
 	}
 	
 	/*
+	 * Get properties
+	 */
+	
+	public VariableBaseNode getVariableBaseNode() {
+		return variableBaseNode;
+	}
+	
+	/*
 	 * (non-Javadoc)
 	 * @see servergraph.nodes.PhpNode#execute(servergraph.ElementManager)
 	 */
@@ -47,12 +55,14 @@ public class AssignmentNode extends ExpressionNode {
 	public DataNode execute(ElementManager elementManager) {
 		PhpVariable phpVariable = variableBaseNode.createVariablePossiblyWithNull(elementManager);
 		DataNode rightHandSideValue = expressionNode.execute(elementManager);
+		
 		/*
 		 * Handle array assignment, e.g. $x[1] = abc.
 		 */
 		if (phpVariable instanceof PhpArrayElement) {
 			String arrayName = ((PhpArrayElement) phpVariable).getName();
 			String key = ((PhpArrayElement) phpVariable).getKey();
+			
 			PhpVariable newPhpArray = new PhpVariable(arrayName);
 			PhpVariable oldPhpArray = elementManager.getVariableFromFunctionScope(arrayName);
 			if (oldPhpArray != null && oldPhpArray.getDataNode() instanceof ArrayNode)
@@ -60,6 +70,7 @@ public class AssignmentNode extends ExpressionNode {
 			else
 				newPhpArray.setDataNode(new ArrayNode());
 			ArrayNode arrayNode = (ArrayNode) newPhpArray.getDataNode();
+			
 			switch (operator) {
 				// '='
 				case Assignment.OP_EQUAL:
@@ -81,6 +92,7 @@ public class AssignmentNode extends ExpressionNode {
 			}
 			elementManager.putVariableInCurrentScope(newPhpArray);
 		}
+		
 		/*
 		 * Handle regualar variable assignment, e.g. $x = abc.
 		 */
@@ -117,6 +129,7 @@ public class AssignmentNode extends ExpressionNode {
 			}
 			elementManager.putVariableInCurrentScope(phpVariable);
 		}
+		
 		return rightHandSideValue;
 	}
 	

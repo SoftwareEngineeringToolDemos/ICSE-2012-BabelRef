@@ -46,6 +46,9 @@ public class ArrayAccessNode extends VariableBaseNode {
 		// BEGIN OF BABELREF CODE
 		if (requestVariableListener != null || sqlTableColumnListener != null)
 			babelrefCheckArrayAccessNode(elementManager);
+		
+		if (VariableNode.variableRefListener != null && arrayVariableBaseNode instanceof VariableNode && !((VariableNode) arrayVariableBaseNode).resolveVariableName(elementManager).startsWith("_"))
+			((VariableNode) arrayVariableBaseNode).variableRefFound(elementManager);
 		// END OF BABELREF CODE
 		
 		if (arrayVariableBaseNode instanceof VariableNode && indexExpressionNode != null) {
@@ -73,6 +76,9 @@ public class ArrayAccessNode extends VariableBaseNode {
 		// BEGIN OF BABELREF CODE
 		if (requestVariableListener != null || sqlTableColumnListener != null)
 			babelrefCheckArrayAccessNode(elementManager);
+		
+		if (VariableNode.variableDeclListener != null && arrayVariableBaseNode instanceof VariableNode && !((VariableNode) arrayVariableBaseNode).resolveVariableName(elementManager).startsWith("_"))
+			((VariableNode) arrayVariableBaseNode).variableDeclFound(elementManager);
 		// END OF BABELREF CODE
 		
 		if (arrayVariableBaseNode instanceof VariableNode && indexExpressionNode != null) {

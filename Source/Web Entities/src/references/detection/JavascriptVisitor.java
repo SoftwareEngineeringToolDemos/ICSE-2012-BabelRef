@@ -86,7 +86,10 @@ public class JavascriptVisitor extends ASTVisitor {
 	public boolean visit(FunctionInvocation functionInvocation) {
 		SimpleName functionName = functionInvocation.getName();
 		
-		if (functionName.getIdentifier().equals("getElementById")) {
+		if (functionName == null) {
+			// Do nothing
+		}
+		else if (functionName.getIdentifier().equals("getElementById")) {
 			// Add a JsRefToHtmlId reference
 			if (functionInvocation.arguments().size() == 1 && functionInvocation.arguments().get(0) instanceof StringLiteral) {
 				StringLiteral stringLiteral = (StringLiteral) functionInvocation.arguments().get(0);

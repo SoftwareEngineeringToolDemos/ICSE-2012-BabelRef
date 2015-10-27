@@ -29,6 +29,7 @@ import edu.iastate.hungnv.babelref.core.BabelRefEntityManager;
 import edu.iastate.hungnv.babelref.core.Helper;
 import entities.Entity;
 import entities.MultiEntity;
+import entities.UndeclaredEntity;
 
 /**
  * 
@@ -91,7 +92,7 @@ public class ERefEntityView extends ViewPart {
 		filePathLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		
 		refreshButton = new Button(parent, SWT.PUSH);
-	    refreshButton.setText("Refresh");
+	    refreshButton.setText("Detect Dangling References");
 	    refreshButton.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		
 		entityListLabel = new Label(parent, SWT.NONE);
@@ -291,12 +292,23 @@ public class ERefEntityView extends ViewPart {
 	 */
 	private void entitySelected(Entity entity) {
 		ArrayList<Reference> references = entity.getReferences();
+		// TODO This code is used to display dangling references in the current file only.
+		// 		Remember to remove this code later.
+		// BEGIN OF CODE TO BE REMOVED
+		if (entity instanceof UndeclaredEntity) {
+			for (Reference reference : entity.getReferences()) {
+				if (!filePathLabel.getText().endsWith(reference.getFilePath())) {
+					references.remove(reference);
+				}
+			}
+		}
+		// END OF CODE TO BE REMOVED
 		Collections.sort(references, new Reference.ReferenceComparator(new Reference.ReferenceComparatorByName(), new Reference.ReferenceComparatorByFile(), new Reference.ReferenceComparatorByPosition()));
 		
 		referenceListLabel.setText("Reference List: (" + references.size() + " references found)");
 		referenceTableViewer.setInput(references);
 
-		for (Reference reference : entity.getReferences()) {
+		for (Reference reference : references) {
 			if (filePathLabel.getText().endsWith(reference.getFilePath())) {
 				referenceSelected(reference);
 				break;

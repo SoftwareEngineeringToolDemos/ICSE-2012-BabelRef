@@ -83,7 +83,7 @@ public class ERefEntityTableView extends ViewPart {
 		filePathLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		
 		refreshButton = new Button(parent, SWT.PUSH);
-	    refreshButton.setText("Refresh");
+	    refreshButton.setText("View Entities");
 	    refreshButton.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		
 	    entityTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
@@ -94,8 +94,8 @@ public class ERefEntityTableView extends ViewPart {
 		entityTableViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 		TableViewerColumn column = new TableViewerColumn(entityTableViewer, SWT.NONE);
-		column.getColumn().setWidth(200);
-		column.getColumn().setText("Reference Name");
+		column.getColumn().setWidth(150);
+		column.getColumn().setText("Entity Name");
 		column.setLabelProvider(new ColumnLabelProvider() {
 			
 			public String getText(Object element) {
@@ -104,8 +104,8 @@ public class ERefEntityTableView extends ViewPart {
 		});
 
 		column = new TableViewerColumn(entityTableViewer, SWT.NONE);
-		column.getColumn().setWidth(200);
-		column.getColumn().setText("Reference Type");
+		column.getColumn().setWidth(150);
+		column.getColumn().setText("Entity Type");
 		column.setLabelProvider(new ColumnLabelProvider() {
 
 			public String getText(Object element) {

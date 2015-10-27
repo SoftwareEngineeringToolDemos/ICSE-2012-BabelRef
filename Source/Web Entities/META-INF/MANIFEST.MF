@@ -11,6 +11,5 @@ Export-Package: babelref,
 Require-Bundle: Html_Partial_Parser;bundle-version="1.0.0",
  Util;bundle-version="1.0.0",
  Data_Model;bundle-version="1.0.0",
- org.eclipse.wst.jsdt.core;bundle-version="1.1.100",
- org.eclipse.core.runtime;bundle-version="3.11.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+ org.eclipse.wst.jsdt.core;bundle-version="1.1.100"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
