@@ -26,6 +26,14 @@ public abstract class Constraint {
 		this.length = 1;
 	}
 	
+	/*
+	 * Get properties
+	 */
+	
+	public int getLength() {
+		return length;
+	}
+	
 	/**
 	 * Returns true if the constraint can be added as a child node to the current constraint
 	 * (the length of the constraint will not exceed a certain limit).
@@ -59,7 +67,7 @@ public abstract class Constraint {
 		collectAtomicConstraints(atomicConstraintsList);
 		AtomicConstraint[] atomicConstraints = atomicConstraintsList.toArray(new AtomicConstraint[]{});
 		
-		if (atomicConstraints.length >= WebEntitiesConfig.CONSTRAINT_MAX_ATOMIC_NUM) {
+		if (atomicConstraints.length > WebEntitiesConfig.CONSTRAINT_MAX_ATOMIC_NUM) {
 			MyLogger.log(MyLevel.USER_EXCEPTION, "In Constraint.java: Constraint has too many atomic predicates (" + atomicConstraints.length + ").");
 			return false;
 		}

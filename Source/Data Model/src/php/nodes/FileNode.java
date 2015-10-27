@@ -10,8 +10,8 @@ import org.eclipse.php.internal.core.ast.nodes.Program;
 import php.ElementManager;
 import php.TraceTable;
 import php.elements.PhpFile;
-
 import util.FileIO;
+import util.StringUtils;
 import datamodel.nodes.DataNode;
 
 /**
@@ -30,10 +30,10 @@ public class FileNode extends PhpNode {
 	 * @see {@link php.nodes.IncludeNode#execute(ElementManager)}
 	 */
 	public FileNode(String projectFolder, String phpFileRelativePath) {
-		// Standardize the file path to Windows format first
-		projectFolder = projectFolder.replace('/', '\\');
-		phpFileRelativePath = phpFileRelativePath.replace('/', '\\');
-		String phpFileAbsolutePath = projectFolder + '\\' + phpFileRelativePath;
+		// Standardize the file path to OS format first
+		projectFolder = projectFolder.replace("\\", StringUtils.getFileSystemSlash()).replace("/", StringUtils.getFileSystemSlash());
+		phpFileRelativePath = phpFileRelativePath.replace("\\", StringUtils.getFileSystemSlash()).replace("/", StringUtils.getFileSystemSlash());
+		String phpFileAbsolutePath = projectFolder + StringUtils.getFileSystemSlash() + phpFileRelativePath;
 		
 		this.phpFileRelativePath = phpFileRelativePath;
 		

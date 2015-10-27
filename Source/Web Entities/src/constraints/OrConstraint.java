@@ -19,8 +19,8 @@ public class OrConstraint extends Constraint {
 	 * @param secondConstraint
 	 */
 	public OrConstraint(Constraint firstConstraint, Constraint secondConstraint) {
-		this.firstConstraint = checkAndUpdateLength(firstConstraint) ? firstConstraint : TrueConstraint.inst;
-		this.secondConstraint = checkAndUpdateLength(secondConstraint) ? secondConstraint : TrueConstraint.inst;
+		this.firstConstraint = checkAndUpdateLength(firstConstraint) ? firstConstraint : new NotConstraint(TrueConstraint.inst);
+		this.secondConstraint = checkAndUpdateLength(secondConstraint) ? secondConstraint : new NotConstraint(TrueConstraint.inst);
 	}
 	
 	/*

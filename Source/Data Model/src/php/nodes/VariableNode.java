@@ -1,10 +1,12 @@
 package php.nodes;
 
+import java.util.ArrayList;
+
 import org.eclipse.php.internal.core.ast.nodes.Variable;
 
+import php.Constraint;
 import php.ElementManager;
 import php.elements.PhpVariable;
-
 import datamodel.nodes.DataNode;
 import datamodel.nodes.SymbolicNode;
 
@@ -36,6 +38,23 @@ public class VariableNode extends VariableBaseNode {
 			variableName = variableNameExpressionNode.resolveName(elementManager);
 		return variableName;
 	}
+	
+	/*
+	 * The following code is used from BabelRef to identify PHP variable entities.
+	 */
+	// BEGIN OF BABELREF CODE
+	public interface IVariableDeclListener {
+		public void variableDeclFound(IdentifierNode variableName, ArrayList<Constraint> constraints, String scope);
+	}
+	
+	public interface IVariableRefListener {
+		public void variableRefFound(IdentifierNode variableName, ArrayList<Constraint> constraints, String scope);
+	}
+	
+	public static IVariableDeclListener variableDeclListener = null;
+	
+	public static IVariableRefListener variableRefListener = null;
+	// END OF BABELREF CODE
 
 	/*
 	 * (non-Javadoc)
@@ -43,6 +62,13 @@ public class VariableNode extends VariableBaseNode {
 	 */
 	@Override
 	public DataNode execute(ElementManager elementManager) {
+		/*
+		 * The following code is used from BabelRef to identify PHP variable entities.
+		 */
+		// BEGIN OF BABELREF CODE
+		variableRefFound(elementManager);
+		// END OF BABELREF CODE
+		
 		String variableName = resolveVariableName(elementManager);
 		PhpVariable phpVariable = elementManager.getVariableFromFunctionScope(variableName);
 		if (phpVariable == null)
@@ -62,9 +88,43 @@ public class VariableNode extends VariableBaseNode {
 	 */
 	@Override
 	public PhpVariable createVariablePossiblyWithNull(ElementManager elementManager) {
+		/*
+		 * The following code is used from BabelRef to identify PHP variable entities.
+		 */
+		// BEGIN OF BABELREF CODE
+		variableDeclFound(elementManager);
+		// END OF BABELREF CODE
+		
 		String variableName = resolveVariableName(elementManager);
 		PhpVariable phpVariable = new PhpVariable(variableName);
 		return phpVariable;
 	}
+	
+	/*
+	 * The following code is used from BabelRef to identify PHP variable entities.
+	 */
+	// BEGIN OF BABELREF CODE
+	public void variableDeclFound(ElementManager elementManager) {
+		if (variableDeclListener != null) {
+			if (variableNameExpressionNode instanceof IdentifierNode)
+				variableDeclListener.variableDeclFound((IdentifierNode) variableNameExpressionNode, elementManager.getConstraints(), getFunctionScope(elementManager));
+		}
+	}
+	
+	public void variableRefFound(ElementManager elementManager) {
+		if (variableRefListener != null) {
+			if (variableNameExpressionNode instanceof IdentifierNode)
+				variableRefListener.variableRefFound((IdentifierNode) variableNameExpressionNode, elementManager.getConstraints(), getFunctionScope(elementManager));
+		}
+	}
+	
+	private String getFunctionScope(ElementManager elementManager) {
+		ArrayList<String> functionStack = elementManager.getFunctionStack();
+		if (functionStack.size() == 0 || elementManager.getGlobalVariableNames().contains(resolveVariableName(elementManager)))
+			return "GLOBAL_SCOPE";
+		else
+			return "FUNCTION_SCOPE_" + functionStack.get(functionStack.size() - 1);
+	}
+	// END OF BABELREF CODE	
 	
 }

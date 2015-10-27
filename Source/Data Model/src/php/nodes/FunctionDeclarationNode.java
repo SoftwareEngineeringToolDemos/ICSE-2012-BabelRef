@@ -56,6 +56,17 @@ public class FunctionDeclarationNode extends StatementNode {
 	public BlockNode getBodyNode() {
 		return bodyNode;
 	}
+	
+	/*
+	 * The following code is used from BabelRef to identify PHP variable entities.
+	 */
+	// BEGIN OF BABELREF CODE
+	public interface IFormalParameterListener {
+		public void formalParameterFound(IdentifierNode variableName, String scope);
+	}
+	
+	public static IFormalParameterListener formalParameterListener = null;
+	// END OF BABELREF CODE
 
 	/*
 	 * (non-Javadoc)
@@ -63,6 +74,21 @@ public class FunctionDeclarationNode extends StatementNode {
 	 */
 	@Override
 	public DataNode execute(ElementManager elementManager) {
+		/*
+		 * The following code is used from BabelRef to identify PHP variable entities.
+		 */
+		// BEGIN OF BABELREF CODE
+		if (formalParameterListener != null) {
+			for (FormalParameterNode formalParameterNode : formalParameterNodes) {
+				if (formalParameterNode.getParameterNameExpressionNode() instanceof IdentifierNode) {
+					IdentifierNode parameterName = (IdentifierNode) formalParameterNode.getParameterNameExpressionNode();
+					String scope = "FUNCTION_SCOPE_" + getFunctionName(); // @see php.nodes.VariableNode.getFunctionScope(ElementManager)
+					formalParameterListener.formalParameterFound(parameterName, scope);
+				}
+			}
+		}
+		// END OF BABELREF CODE
+			
 		elementManager.putFunction(this.getFunctionName(), new PhpFunction(this));
 		return null;
 	}

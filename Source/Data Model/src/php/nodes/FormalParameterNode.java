@@ -64,6 +64,10 @@ public class FormalParameterNode extends PhpNode {
 	 * Get properties
 	 */
 	
+	public ExpressionNode getParameterNameExpressionNode() {
+		return parameterNameExpressionNode;
+	}
+	
 	/**
 	 * Resolves the name of the parameter.
 	 */

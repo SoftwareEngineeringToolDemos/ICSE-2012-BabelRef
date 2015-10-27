@@ -64,6 +64,7 @@ public class FindReferencesInFile {
 		DataModel dataModel = createDataModel(referenceManager);
 		
 		// Step 2: Find references in the data model
+		//TODO Comment out the statement below to stop detecting embedded entities.
 		findReferencesInDataModel(dataModel, referenceManager, projectFolder);
 		
 		// Step 3: Print results

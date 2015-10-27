@@ -33,7 +33,7 @@
             class="edu.iastate.hungnv.babelref.ui.views.ERefEntityView"
             icon="icons/plugins.gif"
             id="edu.iastate.hungnv.babelref.ui.views.ERefEntityView"
-            name="ERef Entity View"
+            name="DRC Dangling Reference View"
             restorable="true">
       </view>
       <view
@@ -49,7 +49,7 @@
             class="edu.iastate.hungnv.babelref.ui.views.ERefEntityTableView"
             icon="icons/plugins.gif"
             id="edu.iastate.hungnv.babelref.ui.views.ERefEntityTableView"
-            name="ERef Entity Table"
+            name="DRC Entity Table"
             restorable="true">
       </view>
       <view
