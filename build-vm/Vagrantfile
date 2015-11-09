@@ -1,0 +1,139 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  config.vm.box = "boxcutter/ubuntu1504-desktop"
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    vb.gui = true
+  
+    # Customize the amount of memory on the VM:
+    vb.memory = "2048"
+  end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
+  # such as FTP and Heroku are also available. See the documentation at
+  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
+  # config.push.define "atlas" do |push|
+  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
+  # end
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  config.vm.provision "shell", inline: <<-SHELL
+	sudo apt-get -y install software-properties-common
+	sudo add-apt-repository ppa:webupd8team/java
+	sudo apt-get update
+	sudo apt-get upgrade
+	sudo echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+	sudo apt-get install -y oracle-java8-installer	
+    
+    #sudo apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+	
+	# Copy Eclipse 4.2
+	sudo mkdir /home/vagrant/software   
+	#sudo wget -O /opt/eclipse-java-luna-SR2-linux-gtk-x86_64.tar.gz http://ftp.fau.de/eclipse/technology/epp/downloads/release/luna/SR2/eclipse-java-luna-SR2-linux-gtk-x86_64.tar.gz
+	#cd /home/vagrant/software/ && sudo tar -zxvf eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz
+    #sudo wget -O /home/vagrant/software/eclipse-SDK-4.2.2-linux-gtk-x86_64.tar.gz http://archive.eclipse.org/eclipse/downloads/drops4/R-4.2.2-201302041200/eclipse-SDK-4.2.2-linux-gtk-x86_64.tar.gz
+    wget -O /home/vagrant/software/eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz http://eclipse.mirror.rafal.ca/technology/epp/downloads/release/juno/SR2/eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz
+    cd /home/vagrant/software/ && sudo tar -zxvf eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz
+	sudo rm -f "/home/vagrant/software/eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz"
+	sudo chown -R vagrant /home/vagrant/software/
+	sudo chown -R vagrant /home/vagrant/software/eclipse/configuration
+	sudo chmod -R a+rwx "/home/vagrant/software/eclipse/configuration"
+	
+	#sudo chown -R vagrant /home/vagrant/software/eclipse/configuration/org.eclipse.osgi
+	sudo chmod -R a+rwx "/home/vagrant/software/"
+	ln -s /home/vagrant/software/eclipse/eclipse "/home/vagrant/Desktop/Eclipse 4.2"
+	
+	# Copy BabelRef binaries from GitHub
+	sudo mkdir "/home/vagrant/Desktop/BabelRef Plugin Jars"
+	sudo wget -O "/home/vagrant/Desktop/BabelRef Plugin Jars/Data_Model_1.0.0.0.jar" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/Binaries/Data_Model_1.0.0.0.jar
+	sudo wget -O "/home/vagrant/Desktop/BabelRef Plugin Jars/Html_Partial_Parser_1.0.0.0.jar" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/Binaries/Html_Partial_Parser_1.0.0.0.jar
+	sudo wget -O "/home/vagrant/Desktop/BabelRef Plugin Jars/Util_1.0.0.0.jar" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/Binaries/Util_1.0.0.0.jar
+	sudo wget -O "/home/vagrant/Desktop/BabelRef Plugin Jars/Web_Entities_1.0.0.0.jar" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/Binaries/Web_Entities_1.0.0.0.jar
+	sudo wget -O "/home/vagrant/Desktop/BabelRef Plugin Jars/edu.iastate.hungnv.babelref_1.0.0.0.jar" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/Binaries/edu.iastate.hungnv.babelref_1.0.0.0.jar
+	sudo chown -R vagrant "/home/vagrant/Desktop/BabelRef Plugin Jars"
+	
+	# Copy BabelRef binaries to the Eclipse Dropins folder
+	sudo cp -a "/home/vagrant/Desktop/BabelRef Plugin Jars/." /home/vagrant/software/eclipse/dropins/
+		
+	# Install eclipse
+	#sudo apt-get install eclipse-platform
+	
+	# Copy sample PHP project from GitHub
+	#sudo mkdir /home/vagrant/workspace
+	sudo wget -O "/home/vagrant/Desktop/BabelRef PHP Project.zip" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/BabelRef%20PHP%20Project.zip
+	sudo unzip "/home/vagrant/Desktop/BabelRef PHP Project.zip" -d /home/vagrant/Desktop/
+	#sudo chown -R vagrant "/home/vagrant/workspace"
+	#sudo chmod -R a+rwx "/home/vagrant/workspace"
+	sudo rm -f "/home/vagrant/Desktop/BabelRef PHP Project.zip"
+	
+	# Copy readme, installation, licenses, acknowledgments, how-to video links to vm desktop
+	wget -O "/home/vagrant/Desktop/Readme.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Readme.txt
+	wget -O "/home/vagrant/Desktop/Installation.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Installation.txt
+	wget -O "/home/vagrant/Desktop/Licenses.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Licenses.txt
+	wget -O "/home/vagrant/Desktop/Acknowledgement.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Acknowledgement.txt
+	wget -O "/home/vagrant/Desktop/BabelRef - How to use on this VM.desktop" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/BabelRef%20-%20How%20to%20use%20on%20this%20VM.desktop
+	wget -O "/home/vagrant/Desktop/BabelRef - Video Demo from Author.desktop" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/BabelRef%20-%20Video%20Demo%20from%20Author.desktop
+	sudo chown -R vagrant "/home/vagrant/Desktop"
+	sudo chmod -R a+rwx "/home/vagrant/Desktop"
+	
+	# Install Adobe Flash Player plugin
+	sudo apt-get install flashplugin-installer 
+	
+	# Launch eclipse
+	#sudo /home/vagrant/software/eclipse/eclipse -data /home/vagrant/workspace
+
+	#sudo chown -R vagrant /home/vagrant/software/
+	#sudo chown -R vagrant /home/vagrant/software/eclipse/configuration
+	#sudo chmod -R a+rwx "/home/vagrant/software/eclipse/configuration"
+
+	#sudo /home/vagrant/software/eclipse/eclipse -data /home/vagrant/workspace
+	
+  SHELL
+end
