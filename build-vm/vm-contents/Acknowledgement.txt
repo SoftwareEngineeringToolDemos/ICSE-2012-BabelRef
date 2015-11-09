@@ -2,4 +2,4 @@
 Acknowledgements
 ****************
 1. Vagrant box used: boxcutter/ubuntu1504-desktop (https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1504-desktop)
-2. Eclipse version: 4.2 Juno (http://archive.eclipse.org/eclipse/downloads/drops4/R-4.2.2-201302041200/eclipse-SDK-4.2.2-linux-gtk-x86_64.tar.gz)
+2. Eclipse version: 4.2 Juno (http://eclipse.mirror.rafal.ca/technology/epp/downloads/release/juno/SR2/eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz)
