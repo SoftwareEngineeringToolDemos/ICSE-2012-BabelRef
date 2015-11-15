@@ -16,7 +16,8 @@ In this folder, you will find:
 2. Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) appropriate to your host OS.
 3. Copy the file [Vagrantfile](https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/blob/master/build-vm/Vagrantfile) from [build-vm](https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/blob/master/build-vm/) to your host OS.
 4. Open command prompt (on Windows) or terminal (on Linux) and change the current directory to where the "Vagrantfile" was copied to.
-5. Type the following in the command prompt or terminal: vagrant up --provider virtualbox
+5. Type the following in the command prompt or terminal:  
+  `vagrant up --provider virtualbox`
 6. The vagrant file will begin executing an at some point the VM will start up on VirtualBox. 
 Please wait for the vagrant script to complete executing before using the VM.
 7. To use the BabelRef plugin in a PHP project, you need to install PHP Development Tools in Eclipse. 
@@ -26,15 +27,15 @@ The instructions are provided in the desktop file "Installation.txt".
 
 As part of the load process, the following is loaded in the VM (as part of the Vagrant script)
 
-1. Ubuntu Desktop 15.
-  * Default username: *vagrant*
-  * Default password: *vagrant*
+1. Ubuntu Desktop 15.  
+  `Default username: vagrant`  
+  `Default password: vagrant`  
 2. Java 8.
 3. Eclipse 4.2 Juno
 4. [Sample PHP project](https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/tree/master/Source) to test BabelRef plugin (copied to /home/vagrant/Desktop/BabelRef PHP Project)
 
 ###Acknowledgements:
-Used vagrant virtual box image of [Ubuntu 14.04 64-bit](https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1404-desktop).
+Used vagrant virtual box image of [Ubuntu 15.04 64-bit](https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1504-desktop).
 
 ###References:
 [Vagrant Documentation](https://docs.vagrantup.com/v2/getting-started/)
@@ -43,4 +44,4 @@ Used vagrant virtual box image of [Ubuntu 14.04 64-bit](https://atlas.hashicorp.
 
 [Tutorial to install java](https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get)
 
-[Ubuntu 14.04 Virtual Box](https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1404-desktop)
+[Ubuntu 15.04 Virtual Box](https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1504-desktop)
