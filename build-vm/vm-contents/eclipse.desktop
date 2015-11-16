@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=/home/vagrant/software/eclipse/eclipse
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=Eclipse 4.2
+Name=Eclipse 4.2
+Comment[en_US]=
+Comment=
