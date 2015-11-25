@@ -1,6 +1,3 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
 # Vagrant configuration
 Vagrant.configure(2) do |config|
   # Configures the base vagrant box found in https://atlas.hashicorp.com/
@@ -29,20 +26,34 @@ Vagrant.configure(2) do |config|
 	sudo echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
 	sudo apt-get install -y oracle-java8-installer	
     
-	# Install the VirtualBox guest additions for better performance and usability
-    #sudo apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
-	
 	# Copy Eclipse 4.2
 	sudo mkdir /home/vagrant/software   
-    #wget -O /home/vagrant/software/eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz http://eclipse.mirror.rafal.ca/technology/epp/downloads/release/juno/SR2/eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz
-    #cd /home/vagrant/software/ && sudo tar -zxvf eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz
 	
-    cd /home/vagrant/software/ && sudo cat /home/vagrant/software/eclipse.tar.gz.* | tar -xvj
+	wget -O /home/vagrant/software/eclipse.tar.gz.00 https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Eclipse%204.2/eclipse.tar.gz.00
+	wget -O /home/vagrant/software/eclipse.tar.gz.01 https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Eclipse%204.2/eclipse.tar.gz.01
+	wget -O /home/vagrant/software/eclipse.tar.gz.02 https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Eclipse%204.2/eclipse.tar.gz.02
+	wget -O /home/vagrant/software/eclipse.tar.gz.03 https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Eclipse%204.2/eclipse.tar.gz.03
+	wget -O /home/vagrant/software/eclipse.tar.gz.04 https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Eclipse%204.2/eclipse.tar.gz.04
+	wget -O /home/vagrant/software/eclipse.tar.gz.05 https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Eclipse%204.2/eclipse.tar.gz.05
+	wget -O /home/vagrant/software/eclipse.tar.gz.06 https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Eclipse%204.2/eclipse.tar.gz.06
+    cd /home/vagrant/software/ && sudo cat eclipse.tar.gz.* | tar -xvj -C /
 	
-	sudo rm -f "/home/vagrant/software/eclipse-jee-juno-SR2-linux-gtk-x86_64.tar.gz"
+	# Delete the compressed files
+	sudo rm -f "/home/vagrant/software/eclipse.tar.gz.00"
+	sudo rm -f "/home/vagrant/software/eclipse.tar.gz.01"
+	sudo rm -f "/home/vagrant/software/eclipse.tar.gz.02"
+	sudo rm -f "/home/vagrant/software/eclipse.tar.gz.03"
+	sudo rm -f "/home/vagrant/software/eclipse.tar.gz.04"
+	sudo rm -f "/home/vagrant/software/eclipse.tar.gz.05"
+	sudo rm -f "/home/vagrant/software/eclipse.tar.gz.06"
+	
 	sudo chown -R vagrant /home/vagrant/software/
-	sudo chown -R vagrant /home/vagrant/software/eclipse/configuration
-	sudo chmod -R a+rwx "/home/vagrant/software/eclipse/configuration"
+	
+	# Copy the BabelRef workspace for Eclipse
+	wget -O /home/vagrant/workspace.tar.gz https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/workspace.tar.gz
+	cd /home/vagrant/ && sudo tar -zxvf workspace.tar.gz
+	sudo rm -f "/home/vagrant/workspace.tar.gz"
+	sudo chown -R vagrant /home/vagrant/workspace/
 	
 	#sudo chown -R vagrant /home/vagrant/software/eclipse/configuration/org.eclipse.osgi
 	sudo chmod -R a+rwx "/home/vagrant/software/"
@@ -55,43 +66,42 @@ Vagrant.configure(2) do |config|
 	sudo wget -O "/home/vagrant/Desktop/BabelRef Plugin Jars/Util_1.0.0.0.jar" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/Binaries/Util_1.0.0.0.jar
 	sudo wget -O "/home/vagrant/Desktop/BabelRef Plugin Jars/Web_Entities_1.0.0.0.jar" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/Binaries/Web_Entities_1.0.0.0.jar
 	sudo wget -O "/home/vagrant/Desktop/BabelRef Plugin Jars/edu.iastate.hungnv.babelref_1.0.0.0.jar" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/Binaries/edu.iastate.hungnv.babelref_1.0.0.0.jar
-	sudo chown -R vagrant "/home/vagrant/Desktop/BabelRef Plugin Jars"
+	sudo chown -R vagrant "/home/vagrant/Desktop/BabelRef Plugin Jars"	
 	
-	# Copy BabelRef binaries to the Eclipse Dropins folder
-	sudo cp -a "/home/vagrant/Desktop/BabelRef Plugin Jars/." /home/vagrant/software/eclipse/dropins/
-		
-	# Install eclipse
-	#sudo apt-get install eclipse-platform
-	
-	# Copy sample PHP project from GitHub
-	#sudo mkdir /home/vagrant/workspace
-	sudo wget -O "/home/vagrant/Desktop/BabelRef PHP Project.zip" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/BabelRef%20PHP%20Project.zip
-	sudo unzip "/home/vagrant/Desktop/BabelRef PHP Project.zip" -d /home/vagrant/Desktop/
-	#sudo chown -R vagrant "/home/vagrant/workspace"
-	#sudo chmod -R a+rwx "/home/vagrant/workspace"
-	sudo rm -f "/home/vagrant/Desktop/BabelRef PHP Project.zip"
-	
+	# Add Eclipse as startup application
+	sudo mkdir "/home/vagrant/.config/autostart"
+	wget -O "/home/vagrant/.config/autostart/eclipse.desktop" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/eclipse.desktop
+
 	# Copy readme, installation, licenses, acknowledgments, how-to video links to vm desktop
-	wget -O "/home/vagrant/Desktop/Readme.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Readme.txt
 	wget -O "/home/vagrant/Desktop/Installation.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Installation.txt
-	wget -O "/home/vagrant/Desktop/Licenses.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Licenses.txt
-	wget -O "/home/vagrant/Desktop/Acknowledgement.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Acknowledgement.txt
+	wget -O "/home/vagrant/Desktop/Readme.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Readme.txt
 	wget -O "/home/vagrant/Desktop/BabelRef - How to use on this VM.desktop" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/BabelRef%20-%20How%20to%20use%20on%20this%20VM.desktop
 	wget -O "/home/vagrant/Desktop/BabelRef - Video Demo from Author.desktop" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/BabelRef%20-%20Video%20Demo%20from%20Author.desktop
+	wget -O "/home/vagrant/Desktop/Licenses.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Licenses.txt
+	wget -O "/home/vagrant/Desktop/Acknowledgement.txt" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/Acknowledgement.txt
 	sudo chown -R vagrant "/home/vagrant/Desktop"
 	sudo chmod -R a+rwx "/home/vagrant/Desktop"
 	
 	# Install Adobe Flash Player plugin to view youtube videos
 	sudo apt-get install flashplugin-installer 
 	
-	# Launch eclipse
-	#sudo /home/vagrant/software/eclipse/eclipse -data /home/vagrant/workspace
+	
+	# Remove unnecessary launcher applications
+	sudo rm -f "/usr/share/applications/ubuntu-amazon-default.desktop"
+	sudo rm -f "/usr/share/applications/libreoffice-calc.desktop"
+	sudo rm -f "/usr/share/applications/libreoffice-writer.desktop"
+	sudo rm -f "/usr/share/applications/libreoffice-impress.desktop"
+	sudo rm -f "/usr/share/applications/ubuntu-software-center.desktop"
+	sudo rm -f "/usr/share/applications/unity-control-center.desktop"
 
-	#sudo chown -R vagrant /home/vagrant/software/
-	#sudo chown -R vagrant /home/vagrant/software/eclipse/configuration
-	#sudo chmod -R a+rwx "/home/vagrant/software/eclipse/configuration"
-
-	#sudo /home/vagrant/software/eclipse/eclipse -data /home/vagrant/workspace
+	# Disable screen lock
+	sudo mkdir "/home/vagrant/software/scripts"
+	wget -O "/home/vagrant/software/scripts/screenlock.sh" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/screenlock.sh
+	wget -O "/home/vagrant/.config/autostart/screenlock.desktop" https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/raw/master/build-vm/vm-contents/screenlock.desktop
+	sudo chmod -R a+rwx "/home/vagrant/software/scripts/"
+	
+	# Reboot the VM
+	sudo reboot
 	
   SHELL
 end
