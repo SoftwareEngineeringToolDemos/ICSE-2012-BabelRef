@@ -35,7 +35,7 @@ As part of the load process, the following is loaded in the VM (as part of the V
 4. [Sample PHP project](https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/tree/master/Source) to test BabelRef plugin (copied to /home/vagrant/Desktop/BabelRef PHP Project)
 
 ###Acknowledgements:
-Used vagrant virtual box image of [Ubuntu 15.04 64-bit](https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1504-desktop).
+Used vagrant virtual box image of [Ubuntu 14.04 64-bit](https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1404-desktop).
 
 ###References:
 [Vagrant Documentation](https://docs.vagrantup.com/v2/getting-started/)
@@ -44,4 +44,4 @@ Used vagrant virtual box image of [Ubuntu 15.04 64-bit](https://atlas.hashicorp.
 
 [Tutorial to install java](https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get)
 
-[Ubuntu 15.04 Virtual Box](https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1504-desktop)
+[Ubuntu 14.04 Virtual Box](https://atlas.hashicorp.com/boxcutter/boxes/ubuntu1404-desktop)
