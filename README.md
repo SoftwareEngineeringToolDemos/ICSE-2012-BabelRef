@@ -12,7 +12,7 @@ In this repository, for BabelRef you will find:
 * :white_check_mark: [Binaries](https://github.com/SoftwareEngineeringToolDemos/ICSE-2012-BabelRef/tree/master/Binaries)
 * :x: The original tool
 * :white_check_mark: A slightly modified version of the tool [Mohammed H Hassan](https://github.com/mhhassan) got working
-* :white_check_mark: [Virtual machine containing tool](https://drive.google.com/open?id=0BzIVuHIervVMZm5jdHc2cFZUdEE)
+* :white_check_mark: [Virtual machine containing tool](http://go.ncsu.edu/SE-tool-VMs)
 
 This repository was constructed by [Mohammed H Hassan](https://github.com/mhhassan) under the supervision of [Emerson Murphy-Hill](https://github.com/CaptainEmerson). Thanks to [Hung Viet Nguyen](http://home.engineering.iastate.edu/~hungnv/Personal/) for his help in establishing this repository. 
 
